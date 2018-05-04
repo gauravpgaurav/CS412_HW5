@@ -64,8 +64,21 @@ df['Village - town'] = df['Village - town'].cat.codes
 df['House - block of flats'] = pd.Categorical(df['House - block of flats'])
 df['House - block of flats'] = df['House - block of flats'].cat.codes
 
-msk = np.random.rand(len(df)) < 0.8
-training = df[msk]
-test = df[~msk]
+#msk = np.random.rand(len(df)) < 0.6
+#training = df[msk]
+#other = df[~msk]
+#msk2 = np.random.rand(len(other)) < 0.5
+#dev = other[msk2]
+#test = other[~msk2]
 
+training_percent = 0.6
+dev_test_percent = 0.2
+np.random.seed(seed=None)
+perm = np.random.permutation(df.index)
+length = len(df.index)
+training_end = int(training_percent * length)
+dev_end = int(dev_test_percent * length) + training_end
+training = df.loc[perm[:training_end]]
+dev = df.loc[perm[training_end:dev_end]]
+test = df.loc[perm[dev_end:]]
 #print(training)

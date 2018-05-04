@@ -8,6 +8,11 @@ Created on Mon Apr 30 09:35:56 2018
 from dataApp import *
 from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import svm
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import VotingClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import Imputer
 import numpy as np
 import pandas as pd
@@ -58,13 +63,20 @@ imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0)
 imp = imp.fit(y_test)
 y_test_imp = imp.transform(y_test)
 
-clf = tree.DecisionTreeClassifier()
+y_train_imp=y_train_imp.reshape(len(y_train_imp))
+#Y= y_train_imp
+
+clf1 = tree.DecisionTreeClassifier()
+clf2 = RandomForestClassifier(n_estimators=10)
+clf3 = svm.SVC()
+clf4 = AdaBoostClassifier(n_estimators=100)
+clf5 = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
+
+eclf = VotingClassifier(estimators=[('rf', clf2), ('svm', clf3), ('mlp', clf5)], voting='hard')
 resArray = np.zeros(10)
 for i in range(0, 10):
-    clf.fit(X=X_train_imp, y=y_train_imp)
-    clf.feature_importances_ # [ 1.,  0.,  0.]
-    result = clf.score(X=X_dev_imp, y=y_dev_imp)
+    eclf = eclf.fit(X=X_train_imp, y=y_train_imp)
+    result = eclf.score(X=X_dev_imp, y=y_dev_imp) # 1.0
     resArray[i] = result
 
 print(str(np.mean(resArray)))
-#0.294554455446

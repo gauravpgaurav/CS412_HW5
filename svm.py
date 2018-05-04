@@ -6,8 +6,7 @@ Created on Mon Apr 30 09:35:56 2018
 @author: gauravpant
 """
 from dataApp import *
-from sklearn import tree
-from sklearn.tree import DecisionTreeClassifier
+from sklearn import svm
 from sklearn.preprocessing import Imputer
 import numpy as np
 import pandas as pd
@@ -58,13 +57,14 @@ imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0)
 imp = imp.fit(y_test)
 y_test_imp = imp.transform(y_test)
 
-clf = tree.DecisionTreeClassifier()
+y_train_imp=y_train_imp.reshape(len(y_train_imp))
+
+clf = svm.SVC()
 resArray = np.zeros(10)
 for i in range(0, 10):
-    clf.fit(X=X_train_imp, y=y_train_imp)
-    clf.feature_importances_ # [ 1.,  0.,  0.]
-    result = clf.score(X=X_dev_imp, y=y_dev_imp)
+    clf = clf.fit(X=X_train_imp, y=y_train_imp)
+    result = clf.score(X=X_dev_imp, y=y_dev_imp) 
     resArray[i] = result
 
 print(str(np.mean(resArray)))
-#0.294554455446
+#0.470297029703
