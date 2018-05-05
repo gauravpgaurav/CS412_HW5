@@ -72,7 +72,7 @@ clf3 = svm.SVC()
 clf4 = AdaBoostClassifier(n_estimators=100)
 clf5 = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
 
-eclf = VotingClassifier(estimators=[('rf', clf2), ('svm', clf3), ('mlp', clf5)], voting='hard')
+eclf = VotingClassifier(estimators=[('dt', clf1), ('rf', clf2), ('svm', clf3), ('ada', clf4), ('mlp', clf5)], voting='hard')
 resArray = np.zeros(10)
 for i in range(0, 10):
     eclf = eclf.fit(X=X_train_imp, y=y_train_imp)
@@ -80,3 +80,4 @@ for i in range(0, 10):
     resArray[i] = result
 
 print(str(np.mean(resArray)))
+#0.373762376238

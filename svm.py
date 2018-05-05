@@ -7,6 +7,7 @@ Created on Mon Apr 30 09:35:56 2018
 """
 from dataApp import *
 from sklearn import svm
+from sklearn.ensemble import BaggingClassifier
 from sklearn.preprocessing import Imputer
 import numpy as np
 import pandas as pd
@@ -59,12 +60,26 @@ y_test_imp = imp.transform(y_test)
 
 y_train_imp=y_train_imp.reshape(len(y_train_imp))
 
-clf = svm.SVC()
+
+#bagging = BaggingClassifier(svm.SVC(), max_samples=0.5, max_features=0.5)
+#0.372277227723
 resArray = np.zeros(10)
-for i in range(0, 10):
+for i in range(10):
+    clf = svm.SVC(C=i+1)
     clf = clf.fit(X=X_train_imp, y=y_train_imp)
     result = clf.score(X=X_dev_imp, y=y_dev_imp) 
     resArray[i] = result
 
+#tuning hyperparameter C
+print('C = ')
+print(str(np.argmax(resArray)))
+c = np.argmax(resArray) + 1
+
+clf = svm.SVC(C=c)
+for i in range(10):
+    clf = clf.fit(X=X_train_imp, y=y_train_imp)
+    result = clf.score(X=X_test_imp, y=y_test_imp) 
+    resArray[i] = result
+    
 print(str(np.mean(resArray)))
 #0.470297029703
